@@ -5,21 +5,27 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import com.selenium.test.base.InitDriver;
 import com.selenium.test.base.SeleniumUtil;
 
 public class TestCase {
 	WebDriver driver=null;
-	SeleniumUtil util=null;
+	
+	public static void waitTime(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * 进入对应的系统
 	 */
 	@BeforeSuite
 	public void getdriver() {
-		driver=InitDriver.getDriver("chrome");
-		util=new SeleniumUtil(driver);
-		util.openBrowser("http://localhost:8080/CRM/");
+		driver=SeleniumUtil.getDriver("chrome",".//chromedriver.exe");
+		SeleniumUtil.openBrowser("http://localhost:8080/CRM/");
 	}
 	
 	/**
@@ -27,9 +33,9 @@ public class TestCase {
 	 */
 	@Test
 	public void loginCRM() {
-		util.sendValue(By.cssSelector("input[name='username']"), "zhangsan001");
-		util.sendValue(By.cssSelector("input[name='password']"), "zhangsan001");
-		util.doClick(By.cssSelector("#loginForm > p.submit > input[type=\"submit\"]"));
+		SeleniumUtil.sendKeyByCss("input[name='username']", "zhangsan001");
+		SeleniumUtil.sendKeyByCss("input[name='password']", "zhangsan001");
+		SeleniumUtil.clickByCss("#loginForm > p.submit > input[type=\"submit\"]");
 	}
 	
 	/**
@@ -37,9 +43,11 @@ public class TestCase {
 	 */
 	@Test(dependsOnMethods="loginCRM")
 	public void userManage() {
-		util.doClick(By.xpath("//*[@id='_easyui_tree_1']/span[1]"));
-		util.doClick(By.xpath("//*[@id=\"_easyui_tree_12\"]/span[4]"));	//切换窗口至用户管理页面
-		util.changeFrame(By.xpath("//*[@id=\"tabs\"]/div[2]/div[2]/div/iframe"));
+		waitTime(2000);
+		SeleniumUtil.clickByXpath("//*[@id='_easyui_tree_1']/span[1]");
+		waitTime(2000);
+		SeleniumUtil.clickByXpath("//*[@id=\"_easyui_tree_10\"]/span[4]");	//切换窗口至用户管理页面
+		SeleniumUtil.toFrameByXpath("//*[@id=\"tabs\"]/div[2]/div[2]/div/iframe");
 		
 	}
 	
@@ -48,13 +56,13 @@ public class TestCase {
 	 */
 	@Test(dependsOnMethods="userManage")
 	public void assignRole() {
-		util.doClick(By.xpath("//*[@id=\"datagrid-row-r1-2-5\"]"));
-		util.doClick(By.xpath("//*[@id=\"assignButton\"]/span"));
+		SeleniumUtil.clickByXpath("//*[@id=\"datagrid-row-r1-2-5\"]");
+		SeleniumUtil.clickByXpath("//*[@id=\"assignButton\"]/span");
 		//切换至分配角色弹出窗口
-		util.toParentWindow();
-		util.changeFrame(By.xpath("//*[@id=\"topWindow\"]/iframe"));
-		util.doClick(By.xpath("//*[@id=\"datagrid-row-r1-2-2\"]/td[1]/div/input"));
-		util.doClick(By.cssSelector("body > div:nth-child(3) > a"));
+		SeleniumUtil.toParentWindow();
+		SeleniumUtil.toFrameByXpath("//*[@id=\"topWindow\"]/iframe");
+		SeleniumUtil.clickByXpath("//*[@id=\"datagrid-row-r1-2-2\"]/td[1]/div/input");
+		SeleniumUtil.doClick(By.cssSelector("body > div:nth-child(3) > a"));
 	}
 
 }

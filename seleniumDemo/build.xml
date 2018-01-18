@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project name="TestSeleniumDemo" default="run" basedir=".">
+	<property name="src" value="src" />
+	<property name="dest" value="build/classes" />
+	<property name="runid" value="run.classpath" />
+	<!--初始化，新建文件夹 -->
+	<target name="init">
+		<mkdir dir="${dest}" />
+	</target>
+	<!--导入依赖的jar包，供运行时使用 -->
+	<echo message="import libs" />
+	<path id="run.classpath">
+		<fileset dir="${basedir}/lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	<!--testng依赖包，固定格式 -->
+	<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="run.classpath" />
+	<!--编译源文件 -->
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${dest}" debug="on">
+			<classpath refid="${runid}" />
+		</javac>
+	</target>
+	<!--运行时jar包路径 -->
+	<path id="runpath">
+		<path refid="${runid}" />
+		<pathelement location="${dest}" />
+	</path>
+	<!--build jar包 -->
+	<target name="build" depends="compile">
+		<jar jarfile="${hello_jar}" basedir="${dest}" />
+	</target>
+	<!--运行程序 -->
+	<target name="run" depends="build">
+		<!--设置testng的xml文件 -->
+		<testng classpathref="runpath" outputDir="test-output">
+			<xmlfileset dir="${basedir}" includes="testng.xml" />
+			<jvmarg value="-ea" />
+		</testng>
+	</target>
+</project>

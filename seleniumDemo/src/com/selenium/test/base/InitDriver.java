@@ -10,14 +10,15 @@ public class InitDriver {
 	public static WebDriver driver=null;
 	/**
 	 * 初始化浏览器驱动
-	 * @param browser -String类型  浏览器名称
+	 * @param browser -String类型  浏览器类型名称
+	 * @param driverPath -String类型  浏览器驱动的位置
 	 * @return -返回WebDriver对象
 	 */
-	public static WebDriver getDriver(String browser) {
+	public static WebDriver getDriver(String browser,String driverPath) {
 		
 		//FireFox火狐浏览器
 		if ("firefox".equals(browser.toLowerCase())) {
-			System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
+			System.setProperty("webdriver.gecko.driver", driverPath);
 			driver = new FirefoxDriver();
 			 driver.manage().window().maximize();
 
@@ -27,12 +28,12 @@ public class InitDriver {
 			capability.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 			capability.setCapability("ignoreProtectedModeSettings", true);
 			// 指定驱动位置，并加载驱动
-			System.setProperty("webdriver.ie.driver", "IEDriverServer.exe");
+			System.setProperty("webdriver.ie.driver", driverPath);
 			driver = new InternetExplorerDriver(capability);
 			driver.manage().window().maximize();
 		} else if ("chrome".equals(browser.toLowerCase())) {//Google Chrome浏览器
             //指定驱动位置，并加载驱动
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", driverPath);
             driver = new ChromeDriver();
             driver.manage().window().maximize();
         }else{
